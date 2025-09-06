@@ -5,21 +5,23 @@ import pandas as pd
 st.set_page_config(page_title="Priced Right Auto CRM Dashboard", page_icon="🚗", layout="wide")
 
 st.title("Priced Right Auto CRM – Streamlit Dashboard")
-st.caption("Starter app. Replace the sample data with your live source when ready.")
 
-# Sample data (replace later)
-df = pd.DataFrame([
-    {"Lead": "John Doe", "Source": "Facebook", "Status": "New"},
-    {"Lead": "Jane Smith", "Source": "Website", "Status": "Contacted"},
-])
+# --- Load CSV from the repo ---
+@st.cache_data
+def load_data():
+    return pd.read_csv("data/leads.csv")  # relative path inside your repo
 
-# Simple UI
-left, right = st.columns([2, 1])
-with left:
-    st.subheader("Leads")
-    st.dataframe(df, use_container_width=True)
-with right:
-    st.metric("Total Leads", len(df))
+df = load_data()
+
+# --- Show data ---
+st.subheader("Leads")
+st.dataframe(df, use_container_width=True)
+
+# --- Optional: Refresh button ---
+if st.button("Refresh data"):
+    st.cache_data.clear()
+    st.experimental_rerun()
+
 
 # --- Patterns you can use later ---
 # 1) CSV in repo:
